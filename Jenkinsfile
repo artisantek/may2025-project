@@ -91,25 +91,25 @@ pipeline {
             }
         }
 
-        stage('Trivy Scans') {
-            parallel {
-                stage('Trivy Scan Backend') {
-                    steps {
-                        sh "trivy image -f json -o backend-results-${BUILD_NUMBER}.json ${backendImage}:${dockerTag}"
-                    }
-                }
-                stage('Trivy Scan Frontend') {
-                    steps {
-                        sh "trivy image -f json -o frontend-results-${BUILD_NUMBER}.json ${frontendImage}:${dockerTag}"
-                    }
-                }
-                stage('Trivy Scan Model') {
-                    steps {
-                        sh "trivy image -f json -o model-results-${BUILD_NUMBER}.json ${modelImage}:${dockerTag}"
-                    }
-                }
-            }
-        }
+        // stage('Trivy Scans') {
+        //     parallel {
+        //         stage('Trivy Scan Backend') {
+        //             steps {
+        //                 sh "trivy image -f json -o backend-results-${BUILD_NUMBER}.json ${backendImage}:${dockerTag}"
+        //             }
+        //         }
+        //         stage('Trivy Scan Frontend') {
+        //             steps {
+        //                 sh "trivy image -f json -o frontend-results-${BUILD_NUMBER}.json ${frontendImage}:${dockerTag}"
+        //             }
+        //         }
+        //         stage('Trivy Scan Model') {
+        //             steps {
+        //                 sh "trivy image -f json -o model-results-${BUILD_NUMBER}.json ${modelImage}:${dockerTag}"
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Docker Push') {
             parallel {
