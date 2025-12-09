@@ -71,45 +71,45 @@ pipeline {
             }
         }
 
-        // stage('Security Scans') {
-        //     parallel {
-        //         stage('Snyk Scan Backend') {
-        //             steps {
-        //                 snykImageScan('$backendImage', '$dockerTag', 'snykCred', '$snykOrg')
-        //             }
-        //         }
-        //         stage('Snyk Scan Frontend') {
-        //             steps {
-        //                 snykImageScan('$frontendImage', '$dockerTag', 'snykCred', '$snykOrg')
-        //             }
-        //         }
-        //         stage('Snyk Scan Model') {
-        //             steps {
-        //                 snykImageScan('$modelImage', '$dockerTag', 'snykCred', '$snykOrg')
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Security Scans') {
+            parallel {
+                stage('Snyk Scan Backend') {
+                    steps {
+                        snykImageScan('$backendImage', '$dockerTag', 'snykCred', '$snykOrg')
+                    }
+                }
+                stage('Snyk Scan Frontend') {
+                    steps {
+                        snykImageScan('$frontendImage', '$dockerTag', 'snykCred', '$snykOrg')
+                    }
+                }
+                stage('Snyk Scan Model') {
+                    steps {
+                        snykImageScan('$modelImage', '$dockerTag', 'snykCred', '$snykOrg')
+                    }
+                }
+            }
+        }
 
-        // stage('Trivy Scans') {
-        //     parallel {
-        //         stage('Trivy Scan Backend') {
-        //             steps {
-        //                 sh "trivy image -f json -o backend-results-${BUILD_NUMBER}.json ${backendImage}:${dockerTag}"
-        //             }
-        //         }
-        //         stage('Trivy Scan Frontend') {
-        //             steps {
-        //                 sh "trivy image -f json -o frontend-results-${BUILD_NUMBER}.json ${frontendImage}:${dockerTag}"
-        //             }
-        //         }
-        //         stage('Trivy Scan Model') {
-        //             steps {
-        //                 sh "trivy image -f json -o model-results-${BUILD_NUMBER}.json ${modelImage}:${dockerTag}"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Trivy Scans') {
+            parallel {
+                stage('Trivy Scan Backend') {
+                    steps {
+                        sh "trivy image -f json -o backend-results-${BUILD_NUMBER}.json ${backendImage}:${dockerTag}"
+                    }
+                }
+                stage('Trivy Scan Frontend') {
+                    steps {
+                        sh "trivy image -f json -o frontend-results-${BUILD_NUMBER}.json ${frontendImage}:${dockerTag}"
+                    }
+                }
+                stage('Trivy Scan Model') {
+                    steps {
+                        sh "trivy image -f json -o model-results-${BUILD_NUMBER}.json ${modelImage}:${dockerTag}"
+                    }
+                }
+            }
+        }
 
         stage('Docker Push') {
             parallel {
@@ -148,7 +148,7 @@ pipeline {
 
         stage('Kubernetes Deploy - DEV') {
             when {
-                branch 'test2'
+                branch 'dev'
             }
             steps {
                 kubernetesEKSHelmDeploy('movie-analyzer', 'dev')
